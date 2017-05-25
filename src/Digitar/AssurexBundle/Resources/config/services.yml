@@ -1,0 +1,4 @@
+services:
+#    digitar_assurex.example:
+#        class: Digitar\AssurexBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

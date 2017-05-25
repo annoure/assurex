@@ -1,0 +1,34 @@
+# src/Digitar/AssurexBundle/Resources/config/routing.yml
+
+digitar_assurex_home:
+    path:      /{page}
+    defaults:
+        _controller: DigitarAssurexBundle:Member:index
+        page: 1
+    requirements:
+        page: \d*
+
+digitar_assurex_view:
+  path:      /member/{id}
+  defaults: { _controller: DigitarAssurexBundle:Member:view }
+  requirements:
+    id: \d+
+
+digitar_assurex_add:
+  path: /add
+  defaults:
+    _controller: DigitarAssurexBundle:Member:add
+
+digitar_assurex_edit:
+  path: /edit/{id}
+  defaults:
+    _controller: DigitarAssurexBundle:Member:edit
+      requirements:
+        id: \d+
+
+digitar_assurex_delete:
+    path:      /delete/{id}
+    defaults:
+        _controller: DigitarAssurexBundle:Member:delete
+    requirements:
+        id: \d+

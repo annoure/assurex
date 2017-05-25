@@ -1,0 +1,7 @@
+digitar_assurex:
+    resource: "@DigitarAssurexBundle/Resources/config/routing.yml"
+    prefix:   /assurex
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
