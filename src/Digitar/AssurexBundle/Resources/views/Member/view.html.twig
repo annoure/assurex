@@ -1,0 +1,26 @@
+{# src/Digitar/AssurexBundle/Resources/views/Member/index.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Affichage de l'annonce {{ id }}</title>
+</head>
+<body>
+<h1>Affichage de l'annonce n°{{ id }} !</h1>
+
+<div>
+    {# you can read and display just one flash message type... #}
+    {% for flash_message in app.session.flashBag.get('notice') %}
+        <div class="flash-notice">
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    {# On affiche tous les messages flash dont le nom est « info » #}
+    {#{% for message in app.session.get('info') %}#}
+        {#<p>Message flash : {{ message }}</p>#}
+    {#{% endfor %}#}
+</div>
+
+</body>
+</html>

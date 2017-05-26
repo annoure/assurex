@@ -1,12 +1,12 @@
 # src/Digitar/AssurexBundle/Resources/config/routing.yml
 
 digitar_assurex_home:
-    path:      /{page}
-    defaults:
-        _controller: DigitarAssurexBundle:Member:index
-        page: 1
-    requirements:
-        page: \d*
+  path:      /{page}
+  defaults:
+    _controller: DigitarAssurexBundle:Member:index
+    page: 1
+  requirements:
+    page: \d*
 
 digitar_assurex_view:
   path:      /member/{id}
@@ -23,12 +23,13 @@ digitar_assurex_edit:
   path: /edit/{id}
   defaults:
     _controller: DigitarAssurexBundle:Member:edit
-      requirements:
-        id: \d+
+  requirements:
+    id: \d+
 
 digitar_assurex_delete:
     path:      /delete/{id}
     defaults:
-        _controller: DigitarAssurexBundle:Member:delete
+      _controller: DigitarAssurexBundle:Member:delete
     requirements:
-        id: \d+
+      id: \d+
+
