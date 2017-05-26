@@ -1,26 +1,33 @@
-{# src/Digitar/AssurexBundle/Resources/views/Member/index.html.twig #}
+{# src/Digitar/AssurexBundle/Resources/view/Member/view.html.twig #}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Affichage de l'annonce {{ id }}</title>
-</head>
-<body>
-<h1>Affichage de l'annonce n°{{ id }} !</h1>
+{% extends "DigitarAssurexBundle::layout.html.twig" %}
 
-<div>
-    {# you can read and display just one flash message type... #}
-    {% for flash_message in app.session.flashBag.get('notice') %}
-        <div class="flash-notice">
-            {{ flash_message }}
-        </div>
-    {% endfor %}
+{% block title %}
+    Détails d'un membre - {{ parent() }}
+{% endblock %}
 
-    {# On affiche tous les messages flash dont le nom est « info » #}
-    {#{% for message in app.session.get('info') %}#}
-        {#<p>Message flash : {{ message }}</p>#}
-    {#{% endfor %}#}
-</div>
+{% block digitarassurex_body %}
 
-</body>
-</html>
+    <h2>{{ member.name }}</h2>
+    <i>Gsm {{ member.gsm }}, le {{ member.date|date('d/m/Y') }}</i>
+
+    <div class="well">
+        {{ member.mail }}
+    </div>
+
+    <p>
+        <a href="{{ path('digitar_assurex_home') }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour à la liste
+        </a>
+        <a href="{{ path('digitar_assurex_edit', {'id': member.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-edit"></i>
+            Modifier le membre
+        </a>
+        <a href="{{ path('digitar_assurex_delete', {'id': member.id}) }}" class="btn btn-danger">
+            <i class="glyphicon glyphicon-trash"></i>
+            Supprimer le membre
+        </a>
+    </p>
+
+{% endblock %}

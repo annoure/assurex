@@ -1,21 +1,27 @@
-{# src/Digitar/AssurexBundle/Resources/views/Member/index.html.twig #}
+{# src/OC/PlatformBundle/Resources/views/Member/index.html.twig #}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Bienvenue sur ma première page avec Digitar !</title>
-</head>
-<body>
-<h1>Hello {{ nom }} !</h1>
+{% extends "DigitarAssurexBundle::layout.html.twig" %}
 
-<p>
-    Le Hello World est un grand classique en programmation.
-    Il signifie énormément, car cela veut dire que vous avez
-    réussi à exécuter le programme pour accomplir une tâche simple :
-    afficher ce hello world !
-</p>
-<p>
-    Lien vers le membre d'id 5 : <a href="{{ path('digitar_assurex_view', {'id': 5}) }}">ici</a>
-</p>
-</body>
-</html>
+{% block title %}
+    Accueil - {{ parent() }}
+{% endblock %}
+
+{% block digitarassurex_body %}
+
+    <h2>Liste des membres</h2>
+
+    <ul>
+        {% for member in listMembers %}
+            <li>
+                <a href="{{ path('digitar_assurex_view', {'id': member.id}) }}">
+                    {{ member.name }}
+                </a>
+                mail {{ member.mail }},
+                date {{ member.date|date('d/m/Y') }}
+            </li>
+        {% else %}
+            <li>Pas (encore !) de membres</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

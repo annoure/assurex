@@ -11,34 +11,50 @@
 namespace Digitar\AssurexBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 use Symfony\Component\HttpFoundation\Request;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MemberController extends Controller
 {
     public function indexAction($page)
     {
-        // On ne sait pas combien de pages il y a
-        // Mais on sait qu'une page doit être supérieure ou égale à 1
-        if ($page < 1) {
-            // On déclenche une exception NotFoundHttpException, cela va afficher
-            // une page d'erreur 404 (qu'on pourra personnaliser plus tard d'ailleurs)
-            throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
-        }
-
-        // Ici, on récupérera la liste des membres, puis on la passera au template
-
-        // Mais pour l'instant, on ne fait qu'appeler le template
-        return $this->render('DigitarAssurexBundle:Member:view.html.twig');
+        $listMembers = array(
+            array(
+                'id'   => 1,
+                'name'      => 'Louis philippe',
+                'gsm'      => '0465985632',
+                'mail'      => 'lphilippe@gmail.com',
+                'date'    => new \Datetime()),
+            array(
+                'id'   => 2,
+                'name'      => 'Jean marie ',
+                'gsm'      => '0498989898',
+                'mail'      => 'jm@gmail.com',
+                'date'    => new \Datetime()),
+            array(
+                'id'   => 3,
+                'name'      => 'Herve',
+                'gsm'      => '04723651212',
+                'mail'      => 'lherve@gmail.com',
+                'date'    => new \Datetime())
+        );
+        return $this->render('DigitarAssurexBundle:Member:index.html.twig', array(
+            'listMembers' => $listMembers
+        ));
     }
 
     public function viewAction($id)
     {
-        // Ici, on récupérera le membre correspondant à l'id $id
+        $member = array(
+                'id'   => 1,
+                'name'      => 'Louis philippe',
+                'gsm'      => '0465985632',
+                'mail'      => 'lphilippe@gmail.com',
+                'date'    => new \Datetime());
 
         return $this->render('DigitarAssurexBundle:Member:view.html.twig', array(
-            'id' => $id
+            'member' => $member
         ));
     }
 
@@ -50,10 +66,9 @@ class MemberController extends Controller
         if ($request->isMethod('POST')) {
             // Ici, on s'occupera de la création et de la gestion du formulaire
             $this->addFlash(
-            'notice',
-            'Membre bien enregistré.'
-        );
-            $request->getSession()->getFlashBag()->add('notice', 'Membre bien enregistré.');
+                'notice',
+                'Membre bien enregistré.'
+            );
 
             // Puis on redirige vers la page de visualisation de ce membre
             return $this->redirectToRoute('digitar_assurex_view', array('id' => 5));
@@ -66,7 +81,12 @@ class MemberController extends Controller
     public function editAction($id, Request $request)
     {
         // Ici, on récupérera le membre correspondant à $id
-
+        $member = array(
+            'id'   => 1,
+            'name'      => 'Louis philippe',
+            'gsm'      => '0465985632',
+            'mail'      => 'lphilippe@gmail.com',
+            'date'    => new \Datetime());
         // Même mécanisme que pour l'ajout
         if ($request->isMethod('POST')) {
             $this->addFlash(
@@ -77,7 +97,7 @@ class MemberController extends Controller
             return $this->redirectToRoute('digitar_assurex_view', array('id' => 5));
         }
 
-        return $this->render('DigitarAssurexBundle:Member:edit.html.twig');
+        return $this->render('DigitarAssurexBundle:Member:edit.html.twig', array('member' => $member));
     }
 
     public function deleteAction($id)
@@ -89,60 +109,20 @@ class MemberController extends Controller
         return $this->render('DigitarAssurexBundle:Member:delete.html.twig');
     }
 
+    public function menuAction($limit)
+    {
+        // On fixe en dur une liste ici, bien entendu par la suite
+        // on la récupérera depuis la BDD !
+        $listMembers = array(
+            array('id' => 2, 'name' => 'Jean luc'),
+            array('id' => 5, 'name' => 'Louis philippe'),
+            array('id' => 9, 'name' => 'Bertrand')
+        );
 
-//
-//
-//    // La route fait appel à DigitarAssurexBundle:Member:view,
-//    // on doit donc définir la méthode viewAction.
-//    // On donne à cette méthode l'argument $id, pour
-//    // correspondre au paramètre {id} de la route
-////        public function viewAction($id)
-////        {
-////            // $id vaut 5 si l'on a appelé l'URL /assurex/member/5
-////
-////            // Ici, on récupèrera depuis la base de données
-////            // l'annonce correspondant à l'id $id.
-////            // Puis on passera l'annonce à la vue pour
-////            // qu'elle puisse l'afficher
-////
-////            return new Response("Affichage du membre d'id : ".$id);
-////        }
-//    public function viewAction($id, Request $request)
-//    {
-//        return $this->render('DigitarAssurexBundle:Member:view.html.twig', array(
-//            'id' => $id
-//        ));
-//    }
-//
-//    // On récupère tous les paramètres en arguments de la méthode
-//    public function viewSlugAction($slug, $year, $format)
-//    {
-//        //Cette route intercepte par exemple les URL suivantes :/assurex/2011/webmaster-aguerri.html
-//        // et /platform/2012/symfony.xml
-//        return new Response(
-//            "On pourrait afficher l'annonce correspondant au
-//            slug '".$slug."', créée en ".$year." et au format ".$format."."
-//        );
-//    }
-//
-//    public function indexAction()
-//    {
-//        $content = $this->get('templating')->render('view.html.twig');
-//
-//        return new Response($content);
-//    }
-//
-//    // Ajoutez cette méthode :
-//    public function addAction(Request $request)
-//    {
-//        $this->addFlash(
-//            'notice',
-//            'Your changes were saved!'
-//        );
-//        // $this->addFlash() is equivalent to $request->getSession()->getFlashBag()->add()
-//
-//        // Puis on redirige vers la page de visualisation de cette annonce
-//        return $this->redirectToRoute('digitar_assurex_view', array('id' => 5));
-//    }
-
+        return $this->render('DigitarAssurexBundle:Member:menu.html.twig', array(
+            // Tout l'intérêt est ici : le contrôleur passe
+            // les variables nécessaires au template !
+            'listMembers' => $listMembers
+        ));
+    }
 }

@@ -1,0 +1,11 @@
+{# src/Digitar/AssurexBundle/Resources/views/Member/menu.html.twig #}
+
+<ul class="nav nav-pills nav-stacked">
+    {% for member in listMembers %}
+        <li>
+            <a href="{{ path('digitar_assurex_view', {'id': member.id}) }}">
+                {{ member.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

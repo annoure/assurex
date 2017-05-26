@@ -1,0 +1,26 @@
+{# src/Digitar/AssurexBundle/Resources/views/Member/add.html.twig #}
+
+{% extends "DigitarAssurexBundle::layout.html.twig" %}
+
+{% block title %}
+    Ajouter un membre - {{ parent() }}
+{% endblock %}
+
+{% block digitarassurex_body %}
+
+    <h2>Ajouter un membre</h2>
+
+    {{ include("DigitarAssurexBundle:Member:form.html.twig") }}
+
+    <p>
+        Vous ajouter un nouveau membre.
+    </p>
+
+    <p>
+        <a href="{{ path('digitar_assurex_view', {'id': member.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour au membre
+        </a>
+    </p>
+
+{% endblock %}

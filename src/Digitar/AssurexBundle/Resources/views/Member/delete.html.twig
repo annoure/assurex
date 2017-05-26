@@ -1,0 +1,24 @@
+{# src/Digitar/AssurexBundle/Resources/views/Member/delete.html.twig #}
+
+{% extends "DigitarAssurexBundle::layout.html.twig" %}
+
+{% block title %}
+    Supprimer un membre - {{ parent() }}
+{% endblock %}
+
+{% block digitarassurex_body %}
+
+    <h2>Supprimer un membre</h2>
+
+    <p>
+        Vous supprimer un membre.
+    </p>
+
+    <p>
+        <a href="{{ path('digitar_assurex_view', {'id': member.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour au membre
+        </a>
+    </p>
+
+{% endblock %}

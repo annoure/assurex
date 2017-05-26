@@ -1,0 +1,26 @@
+{# src/Digitar/AssurexBundle/Resources/views/Member/edit.html.twig #}
+
+{% extends "DigitarAssurexBundle::layout.html.twig" %}
+
+{% block title %}
+    Modifier un membre - {{ parent() }}
+{% endblock %}
+
+{% block digitarassurex_body %}
+
+    <h2>Modifier un membre</h2>
+
+    {{ include("DigitarAssurexBundle:Member:form.html.twig") }}
+
+    <p>
+        Vous éditez un membre déjà existant.
+    </p>
+
+    <p>
+        <a href="{{ path('digitar_assurex_view', {'id': member.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour au membre
+        </a>
+    </p>
+
+{% endblock %}
