@@ -10,4 +10,24 @@ namespace Digitar\AssurexBundle\Repository;
  */
 class MemberRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getMemberWithTypeContrat(array $contrattypeNames){
+        $qb = $this->createQueryBuilder('a');
+
+        // On fait une jointure avec l'entité Category avec pour alias « c »
+        $qb
+            ->innerJoin('a.typeContrats', 'tc')
+            ->addSelect('tc')
+        ;
+
+        // Puis on filtre sur le nom des conrats type à l'aide d'un IN
+        $qb->where($qb->expr()->in('tc.name', $contrattypeNames));
+        // La syntaxe du IN et d'autres expressions se trouve dans la documentation Doctrine
+
+        // Enfin, on retourne le résultat
+        return $qb
+            ->getQuery()
+            ->getResult()
+            ;
+
+    }
 }

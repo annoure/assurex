@@ -3,6 +3,8 @@
 namespace Digitar\AssurexBundle\Entity;
 
 use DateTime;
+use Digitar\AssurexBundle\Entity\Photo;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -197,5 +199,75 @@ class Member
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @ORM\OneToOne(targetEntity="\Digitar\AssurexBundle\Entity\Photo", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $photo;
+
+    /**
+     * Set photo
+     *
+     * @param \Digitar\AssurexBundle\Entity\Photo $photo
+     *
+     * @return Member
+     */
+    public function setPhoto(\Digitar\AssurexBundle\Entity\Photo $photo = null)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get photo
+     *
+     * @return \Digitar\AssurexBundle\Entity\Photo
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Digitar\AssurexBundle\Entity\TypeContrat", cascade={"persist"})
+     * @ORM\JoinTable(name="dgtr_member_typecontrat")
+     */
+    private $typeContrats;
+
+    /**
+     * Add typeContrat
+     *
+     * @param \Digitar\AssurexBundle\Entity\TypeContrat $typeContrat
+     *
+     * @return Member
+     */
+    public function addTypeContrat(\Digitar\AssurexBundle\Entity\TypeContrat $typeContrat)
+    {
+        $this->typeContrats[] = $typeContrat;
+
+        return $this;
+    }
+
+    /**
+     * Remove typeContrat
+     *
+     * @param \Digitar\AssurexBundle\Entity\TypeContrat $typeContrat
+     */
+    public function removeTypeContrat(\Digitar\AssurexBundle\Entity\TypeContrat $typeContrat)
+    {
+        $this->typeContrats->removeElement($typeContrat);
+    }
+
+    /**
+     * Get typeContrats
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTypeContrats()
+    {
+        return $this->typeContrats;
     }
 }

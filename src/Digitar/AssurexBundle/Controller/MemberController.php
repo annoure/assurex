@@ -13,6 +13,7 @@ namespace Digitar\AssurexBundle\Controller;
 use DateInterval;
 use DateTime;
 use Digitar\AssurexBundle\Entity\Member;
+use Digitar\AssurexBundle\Entity\Transaction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -51,24 +52,24 @@ class MemberController extends Controller
     public function viewAction($id)
     {
 
-        // On récupère le repository
-        $repository = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('DigitarAssurexBundle:Member')
-        ;
+        $em = $this->getDoctrine()->getManager();
 
-        // On récupère l'entité correspondante à l'id $id
-        $member = $repository->find($id);
+        // On récupère l'annonce $id
+        $member = $em->getRepository('DigitarAssurexBundle:Member')->find($id);
 
-        // $member est donc une instance de OC\PlatformBundle\Entity\Advert
-        // ou null si l'id $id  n'existe pas, d'où ce if :
         if (null === $member) {
-            throw new NotFoundHttpException("Le membre d'id ".$id." n'existe pas.");
+            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
-        // Le render ne change pas, on passait avant un tableau, maintenant un objet
+        // On récupère la liste des candidatures de cette annonce
+        $listTransactions = $em
+            ->getRepository('DigitarAssurexBundle:Transaction')
+            ->findBy(array('member' => $member))
+        ;
+
         return $this->render('DigitarAssurexBundle:Member:view.html.twig', array(
-            'member' => $member
+            'member'           => $member,
+            'listTransactions' => $listTransactions
         ));
 
     }
@@ -88,6 +89,17 @@ class MemberController extends Controller
         // On peut ne pas définir le statut ,
         // car ces attributs sont définis automatiquement dans le constructeur
 
+
+        // Création d'une première candidature
+        $transaction1 = new Transaction();
+        $transaction1->setDate(new DateTime());
+        $transaction1->getDescription("maDscr");
+        $transaction1->setCommunication("maComm");
+        $transaction1->setMontant("200");
+
+
+        $transaction1->setMember($member);
+
         // On récupère l'EntityManager
         $em = $this->getDoctrine()->getManager();
 
@@ -99,6 +111,7 @@ class MemberController extends Controller
          * Cela n'exécute pas encore de requête SQL, ni rien d'autre.
          */
         $em->persist($member);
+        $em->persist($transaction1);
 
         // Étape 2 : On « flush » tout ce qui a été persisté avant
         /**
@@ -134,14 +147,14 @@ class MemberController extends Controller
             // Puis on redirige vers la page de visualisation de ce membre
             /**
              * notre Member étant maintenant enregistré en base de données grâce au flush(),
-             * Doctrine2 lui a attribué un id ! On peut donc utiliser$member->getId()
+             * Doctrine2 lui a attribué un id ! On peut donc utiliser$member2->getId()
              * dans la génération de la route, et non un nombre fixe comme précédemment.
              */
             return $this->redirectToRoute('digitar_assurex_view', array('id' => $member->getId()));
         }
 
         // Si on n'est pas en POST, alors on affiche le formulaire
-        return $this->render('DigitarAssurexBundle:Member:add.html.twig', array('member' => $member));
+        return $this->render('DigitarAssurexBundle:Member:add.html.twig', array('member2' => $member));
     }
 
     public function editAction($id, Request $request)
