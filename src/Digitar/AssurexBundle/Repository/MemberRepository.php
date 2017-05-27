@@ -1,6 +1,7 @@
 <?php
 
 namespace Digitar\AssurexBundle\Repository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * MemberRepository
@@ -29,5 +30,29 @@ class MemberRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
             ;
 
+    }
+
+    public function getMembers($page, $nbPerPage)
+    {
+        $query = $this->createQueryBuilder('m')
+            // Jointure sur l'attribut image
+            ->leftJoin('m.photo', 'p')
+            ->addSelect('p')
+            // Jointure sur l'attribut categories
+            ->leftJoin('m.transactions', 't')
+            ->addSelect('t')
+            ->orderBy('t.date', 'DESC')
+            ->getQuery()
+        ;
+        $query
+            // On définit l'annonce à partir de laquelle commencer la liste
+            ->setFirstResult(($page-1) * $nbPerPage)
+            // Ainsi que le nombre d'annonce à afficher sur une page
+            ->setMaxResults($nbPerPage)
+        ;
+
+        // Enfin, on retourne l'objet Paginator correspondant à la requête construite
+        // (n'oubliez pas le use correspondant en début de fichier)
+        return new Paginator($query, true);
     }
 }

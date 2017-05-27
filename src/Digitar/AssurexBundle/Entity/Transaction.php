@@ -49,6 +49,16 @@ class Transaction
      */
     private $communication;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Digitar\AssurexBundle\Entity\Member", inversedBy="transactions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $member;
+
+    public function __construct()
+    {
+        $this->date = new \Datetime();
+    }
 
     /**
      * Get id
@@ -156,11 +166,7 @@ class Transaction
         return $this->communication;
     }
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Digitar\AssurexBundle\Entity\Member")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $member;
+
 
     /**
      * Set member

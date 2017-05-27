@@ -3,7 +3,8 @@
 namespace Digitar\AssurexBundle\Entity;
 
 use DateTime;
-use Digitar\AssurexBundle\Entity\Photo;
+
+use Doctrine\Common\Collections\ArrayCollection;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -51,6 +52,36 @@ class Member
      * @ORM\Column(name="birthday", type="datetime")
      */
     private $birthday;
+
+    /**
+     * @ORM\Column(name="status", type="boolean")
+     */
+    private $status = true;
+
+    /**
+     * @ORM\OneToOne(targetEntity="\Digitar\AssurexBundle\Entity\Photo", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $photo;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Digitar\AssurexBundle\Entity\TypeContrat", cascade={"persist"})
+     * @ORM\JoinTable(name="dgtr_member_typecontrat")
+     */
+    private $typeContrats;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Digitar\AssurexBundle\Entity\Transaction", mappedBy="member")
+     */
+    private $transactions;
+
+    public function __construct()
+    {
+        // Par défaut, la date de l'annonce est la date d'aujourd'hui
+        $this->status = true;
+        $this->typeContrats = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
+    }
 
 
     /**
@@ -165,17 +196,7 @@ class Member
         $interval = $birthday->diff(new DateTime);
         echo $interval->y;
     }
-    /**
-     * @ORM\Column(name="status", type="boolean")
-     */
-    private $status = true;
 
-
-    public function __construct()
-    {
-        // Par défaut, la date de l'annonce est la date d'aujourd'hui
-        $this->status = true;
-    }
 
     /**
      * Set status
@@ -202,12 +223,6 @@ class Member
     }
 
     /**
-     * @ORM\OneToOne(targetEntity="\Digitar\AssurexBundle\Entity\Photo", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $photo;
-
-    /**
      * Set photo
      *
      * @param \Digitar\AssurexBundle\Entity\Photo $photo
@@ -231,11 +246,6 @@ class Member
         return $this->photo;
     }
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Digitar\AssurexBundle\Entity\TypeContrat", cascade={"persist"})
-     * @ORM\JoinTable(name="dgtr_member_typecontrat")
-     */
-    private $typeContrats;
 
     /**
      * Add typeContrat
@@ -269,5 +279,39 @@ class Member
     public function getTypeContrats()
     {
         return $this->typeContrats;
+    }
+
+    /**
+     * Add transaction
+     *
+     * @param \Digitar\AssurexBundle\Entity\Transaction $transaction
+     *
+     * @return Member
+     */
+    public function addTransaction(\Digitar\AssurexBundle\Entity\Transaction $transaction)
+    {
+        $this->transactions[] = $transaction;
+
+        return $this;
+    }
+
+    /**
+     * Remove transaction
+     *
+     * @param \Digitar\AssurexBundle\Entity\Transaction $transaction
+     */
+    public function removeTransaction(\Digitar\AssurexBundle\Entity\Transaction $transaction)
+    {
+        $this->transactions->removeElement($transaction);
+    }
+
+    /**
+     * Get transactions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTransactions()
+    {
+        return $this->transactions;
     }
 }
