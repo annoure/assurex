@@ -10,9 +10,13 @@
 
 namespace Digitar\AssurexBundle\Controller;
 
+use DateInterval;
+use DateTime;
+use Digitar\AssurexBundle\Entity\Member;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 class MemberController extends Controller
@@ -46,21 +50,78 @@ class MemberController extends Controller
 
     public function viewAction($id)
     {
-        $member = array(
-                'id'   => 1,
-                'name'      => 'Louis philippe',
-                'gsm'      => '0465985632',
-                'mail'      => 'lphilippe@gmail.com',
-                'date'    => new \Datetime());
 
+        // On récupère le repository
+        $repository = $this->getDoctrine()
+            ->getManager()
+            ->getRepository('DigitarAssurexBundle:Member')
+        ;
+
+        // On récupère l'entité correspondante à l'id $id
+        $member = $repository->find($id);
+
+        // $member est donc une instance de OC\PlatformBundle\Entity\Advert
+        // ou null si l'id $id  n'existe pas, d'où ce if :
+        if (null === $member) {
+            throw new NotFoundHttpException("Le membre d'id ".$id." n'existe pas.");
+        }
+
+        // Le render ne change pas, on passait avant un tableau, maintenant un objet
         return $this->render('DigitarAssurexBundle:Member:view.html.twig', array(
             'member' => $member
         ));
+
     }
 
     public function addAction(Request $request)
     {
-        // La gestion d'un formulaire est particulière, mais l'idée est la suivante :
+
+        // Création de l'entité
+        $member = new Member();
+        $member->setName('Stephan.');
+        $member->setGsm('04659865');
+        $member->setMail("msteph@gmail.com");
+        $birth = new DateTime();
+        $birth->sub(new DateInterval('P20Y'));
+        var_dump($birth);
+        $member->setBirthday($birth);
+        // On peut ne pas définir le statut ,
+        // car ces attributs sont définis automatiquement dans le constructeur
+
+        // On récupère l'EntityManager
+        $em = $this->getDoctrine()->getManager();
+
+        // Étape 1 : On « persiste » l'entité
+        /**
+         * L'étape 1 dit à Doctrine de « persister » l'entité.
+         * Cela veut dire qu'à partir de maintenant cette entité
+         * (qui n'est qu'un simple objet !) est gérée par Doctrine.
+         * Cela n'exécute pas encore de requête SQL, ni rien d'autre.
+         */
+        $em->persist($member);
+
+        // Étape 2 : On « flush » tout ce qui a été persisté avant
+        /**
+         * L'étape 2 dit à Doctrine d'exécuter effectivement les requêtes nécessaires
+         * pour sauvegarder les entités qu'on lui a dit de persister précédemment
+         * (il fait donc desINSERT INTO  & Cie) ;
+         */
+        $em->flush();
+
+        /**
+         * TRAITEMENT SERVICE STAFF
+         */
+        // On récupère le service
+//        $antimineur = $this->container->get('digitar_assurex.antimineur');
+//
+//        // Je pars du principe que $text contient le texte d'un message quelconque
+//        //$date = new DateTime();
+//        $date = date('Y-m-d', strtotime('-20 years'));
+//
+//
+//        if ($antimineur->isMineur($date)) {
+//            throw new \Exception('Le membre a ete detecté comme mineur !');
+//        }
 
         // Si la requête est en POST, c'est que le visiteur a soumis le formulaire
         if ($request->isMethod('POST')) {
@@ -71,11 +132,16 @@ class MemberController extends Controller
             );
 
             // Puis on redirige vers la page de visualisation de ce membre
-            return $this->redirectToRoute('digitar_assurex_view', array('id' => 5));
+            /**
+             * notre Member étant maintenant enregistré en base de données grâce au flush(),
+             * Doctrine2 lui a attribué un id ! On peut donc utiliser$member->getId()
+             * dans la génération de la route, et non un nombre fixe comme précédemment.
+             */
+            return $this->redirectToRoute('digitar_assurex_view', array('id' => $member->getId()));
         }
 
         // Si on n'est pas en POST, alors on affiche le formulaire
-        return $this->render('DigitarAssurexBundle:Member:add.html.twig');
+        return $this->render('DigitarAssurexBundle:Member:add.html.twig', array('member' => $member));
     }
 
     public function editAction($id, Request $request)

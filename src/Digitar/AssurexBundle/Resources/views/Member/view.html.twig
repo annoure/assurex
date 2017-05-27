@@ -9,7 +9,7 @@
 {% block digitarassurex_body %}
 
     <h2>{{ member.name }}</h2>
-    <i>Gsm {{ member.gsm }}, le {{ member.date|date('d/m/Y') }}</i>
+    <i>Gsm {{ member.gsm }}, le {{ member.birthday|date('d/m/Y') }}</i>
 
     <div class="well">
         {{ member.mail }}
